@@ -1,14 +1,192 @@
-<ion-header>
-  <ion-navbar>
-    <ion-title>
-      Ionic Blank
-    </ion-title>
-  </ion-navbar>
+<ion-header style="height: 20%; background-color: cornflowerblue">
+  <ion-grid>
+    <ion-row>
+      <ion-col col-2>
+        <p *ngIf="firebase.currentUser" style="color: white">v {{_ds.version.primary}}.{{_ds.version.secondary}}</p>
+        <button ion-button
+                *ngIf="_ds.showSignInButton && !firebase.currentUser"
+                color="danger"
+                large
+                round
+                (click)="signInPrompt()"
+        >כניסת מורשים לעריכה</button>
+        <h3 *ngIf="firebase.currentUser" style="color: white">שלום {{firebase.userName}}</h3>
+        <button ion-button
+                *ngIf="firebase.currentUser"
+                color="danger"
+                round
+                (click)="signOutPrompt()"
+        >יציאה ממצב עריכה</button>
+      </ion-col>
+      <ion-col>
+        <search style="top:20%"></search>
+      </ion-col>
+      <ion-col col-2 *ngIf="!_ds.mobile">
+        <!--<div style="margin: auto; height: 100%;">-->
+          <!--<img src="assets/new_liberal_movement_logo-1.png" style="float: left; width: 100%; height: 100%; cursor: pointer" (click)="goToSite()">-->
+        <!--</div>-->
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <!--<ion-navbar>-->
+    <!--<ion-title>-->
+      <!--Ionic Blank-->
+    <!--</ion-title>-->
+  <!--</ion-navbar>-->
 </ion-header>
 
-<ion-content padding>
-  The world is your oyster.
-  <p>
-    If you get lost, the <a href="http://ionicframework.com/docs/v2">docs</a> will be your guide.
-  </p>
+
+<ion-content padding style="background-color: white">
+
+  <ion-grid>
+    <ion-row>
+
+      <ion-col id="menu" col-2 *ngIf="!_ds.mobile">
+        <div style="position: fixed; top: 22%; width: 15%; height: 60%">
+          <!--<h1>תפריט סוגי מידע</h1>-->
+          <criteria style="width: 80%"></criteria>
+        </div>
+      </ion-col>
+
+      <ion-col id="items" col-7>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-item>
+                <ion-label>תצוגת פריטים מלאה</ion-label>
+                <ion-checkbox
+                  [(ngModel)]="_ds.fullViewAll"
+                  (click)="_ds.setViewToAll()"
+                  [color]="_ds.fullViewCnt == _ds.filteredItems.length ? 'primary' : 'light'"
+                ></ion-checkbox>
+              </ion-item>
+			  <ion-item>
+			  <ion-icon item-start name=star style="color:#c3b900"></ion-icon>
+                <ion-label>מומלצים</ion-label>
+                <ion-checkbox
+                  [(ngModel)]="_ds.recommendedOnly"
+                  (click)="_ds.onSearch()"
+                ></ion-checkbox>
+              </ion-item>
+            </ion-col>
+            <ion-col>
+              <ion-item>
+                <ion-label>עברית</ion-label>
+                <ion-checkbox
+                  [(ngModel)]="_ds.showLang.he"
+                  (click)="_ds.onSearch()"
+                ></ion-checkbox>
+              </ion-item>
+              <ion-item>
+                <ion-label>אנגלית</ion-label>
+                <ion-checkbox
+                  [(ngModel)]="_ds.showLang.en"
+                  (click)="_ds.onSearch()"
+                ></ion-checkbox>
+              </ion-item>
+            </ion-col>
+            <ion-col>
+              <ion-list radio-group [(ngModel)]="_ds.sortBy" (ionChange)="_ds.onSearch('sort')">
+                <ion-item>
+                  <ion-label>מיין לפי א"ב</ion-label>
+                  <ion-radio value="abc"></ion-radio>
+                </ion-item>
+                <ion-item>
+                  <ion-label>מיין לפי תאריך העלאה</ion-label>
+                  <ion-radio value="date"></ion-radio>
+                </ion-item>
+				<ion-item>
+                  <ion-label>מיין בסדר אקראי</ion-label>
+                  <ion-radio value="rand"></ion-radio>
+                </ion-item>
+              </ion-list>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+
+        <!--<button ion-button (click)="firebase.testSecurityAccess()">Test security</button>-->
+        <!--<button ion-button (click)="firebase.addItemToServer(dbItems)">Input</button>-->
+
+        <div *ngIf="_ds.viewTrash">
+          <h1 ion-item color="danger">
+            <button ion-button round item-end (click)="unshowTrash()">
+              <ion-icon name="arrow-back"></ion-icon>
+              יציאה מסל המיחזור</button>
+            מציג פריטים שנמחקו:</h1>
+        </div>
+
+        <p>מציג {{_ds.filteredItems.length}} פריטים {{_ds.filteredItems.length == _ds.items.length ? '(הכל)' : ''}}</p>
+        <div *ngIf="_ds.filteredItems.length">
+          <!--><button ion-button small round icon-only (click)="_ds.divToPages()" [disabled]="_ds.itemsPerPage<10">
+            <ion-icon name="refresh"></ion-icon>
+          </button>
+          <ion-input type="number" min="10" [(ngModel)]="_ds.itemsPerPage" style="width: 60px; display: inline-block"></ion-input><-->
+		  <!--><button ion-button small round icon-only (click)="_ds.itemsPerPage = 10; _ds.divToPages()">10</button><-->
+		  <a (click)="_ds.itemsPerPage = 10; _ds.onSearch('divPage')" style="cursor:pointer" [ngStyle]="{'color' : _ds.itemsPerPage == 10 ? 'red' : 'blue'}">10</a> |
+		  <a (click)="_ds.itemsPerPage = 25; _ds.onSearch('divPage')" style="cursor:pointer" [ngStyle]="{'color' : _ds.itemsPerPage == 25 ? 'red' : 'blue'}">25</a> |
+		  <a (click)="_ds.itemsPerPage = 50; _ds.onSearch('divPage')" style="cursor:pointer" [ngStyle]="{'color' : _ds.itemsPerPage == 50 ? 'red' : 'blue'}">50</a> |
+		  <a (click)="_ds.itemsPerPage = 75; _ds.onSearch('divPage')" style="cursor:pointer" [ngStyle]="{'color' : _ds.itemsPerPage == 75 ? 'red' : 'blue'}">75</a> |
+		  <a (click)="_ds.itemsPerPage = 100; _ds.onSearch('divPage')" style="cursor:pointer" [ngStyle]="{'color' : _ds.itemsPerPage == 100 ? 'red' : 'blue'}">100</a>
+          תוצאות בעמוד
+		  <br>
+          <button ion-button small round icon-only (click)="_ds.shownPage=_ds.shownPage-1" [disabled]="_ds.shownPage==0">
+            <ion-icon name="arrow-round-back"></ion-icon>
+          </button>
+		  <p style="display:inline-block">עמוד {{_ds.shownPage+1}} מתוך {{_ds.pages.length}}</p>
+          <button ion-button small round icon-only (click)="_ds.shownPage=_ds.shownPage+1" [disabled]="_ds.shownPage==_ds.pages.length-1">
+            <ion-icon name="arrow-round-forward"></ion-icon>
+          </button>
+        </div>
+
+        <div>
+
+          <button ion-button
+                  *ngIf="_ds.EDITOR_MODE"
+                  block
+                  outline
+                  (click)="goToCreatePage()"
+          >הוספת פריטים חדשים
+          </button>
+
+          <item
+            *ngFor="let item of _ds.pages[_ds.shownPage]"
+            [info]="item"
+          ></item>
+
+          <div *ngIf="_ds.filteredItems.length">
+            <button ion-button small round icon-only (click)="_ds.shownPage=_ds.shownPage-1" [disabled]="_ds.shownPage==0">
+              <ion-icon name="arrow-round-back"></ion-icon>
+            </button>
+			<p style="display:inline-block">עמוד {{_ds.shownPage+1}} מתוך {{_ds.pages.length}}</p>
+            <button ion-button small round icon-only (click)="_ds.shownPage=_ds.shownPage+1; content.scrollToTop()" [disabled]="_ds.shownPage==_ds.pages.length-1">
+              <ion-icon name="arrow-round-forward"></ion-icon>
+            </button>
+          </div>
+
+        </div>
+      </ion-col>
+
+      <ion-col col-3>
+        <person></person>
+      </ion-col>
+
+    </ion-row>
+  </ion-grid>
+
+
+  <ion-fab bottom left *ngIf="_ds.EDITOR_MODE">
+    <button ion-fab
+            color="primary">
+            <!--*ngIf="_ds.EDITOR_MODE"-->
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-fab-list side="left">
+      <button ion-fab (click)="showTrash()"><ion-icon name="trash"></ion-icon></button>
+      <button ion-fab (click)="showAuthorsPage()"><ion-icon name="people"></ion-icon></button>
+      <button ion-fab (click)="showHistoryPage()"><ion-icon name="clipboard"></ion-icon></button>
+      <button ion-fab (click)="_ds.createBackUpAsJson()"><ion-icon name="code-download"></ion-icon></button>
+      <button ion-fab (click)="createList()"><ion-icon name="list"></ion-icon></button>
+    </ion-fab-list>
+  </ion-fab>
+
 </ion-content>

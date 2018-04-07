@@ -1,0 +1,22 @@
+<!-- Generated template for the KeyComponent component -->
+<a
+  style="cursor: pointer"
+  (click)="clicked()"
+  *ngIf="!isSelected"
+>{{text}}
+</a>
+
+{{last ? '' : ' |'}}
+
+<button
+  *ngIf="isSelected"
+  (click)="clicked()"
+  color="dark"
+  ion-button
+  icon-start
+  round
+  small
+>
+  <ion-icon name="close"></ion-icon>
+  {{text}}
+</button>

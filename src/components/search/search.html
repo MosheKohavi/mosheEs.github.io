@@ -1,0 +1,80 @@
+<ion-grid>
+  <ion-row>
+	<ion-col col-7>
+
+		<ion-searchbar
+		  (keypress)="enterPressed($event.keyCode)"
+		  [(ngModel)]="_ds.query"
+		  placeholder="חיפוש חופשי (הכנס כותרת, שם מחבר, נושא או מילת חיפוש)"
+		  style="margin-left: 0px; display: inline-block"
+		></ion-searchbar>
+		
+		<!--<h3 *ngIf="_ds.filterKeys.length" style="display: inline-block">מסננים: </h3>-->
+	
+		<key *ngFor="let key of _ds.filterKeys"
+         [text]="key"
+         [isSelected]="true"
+		></key>
+		
+	</ion-col>
+	
+	<ion-col col-2>
+	
+		<button ion-button
+				icon-start
+				[disabled]="!_ds.query"
+				(click)="_ds.onSearch()">
+				<ion-icon name="search"></ion-icon>
+				חפש
+		</button>
+		
+	
+	
+	</ion-col>
+
+	<ion-col>
+		<button
+		  ion-button
+		  icon-start
+		  round
+		  block
+		  small
+		  (click)="_ds.addFilter(_ds.query)"
+		  [disabled]="!_ds.query || _ds.filterKeys.length >= maxFilters"
+		>
+		  <ion-icon name="add-circle"></ion-icon>
+		  הוסף מסנן
+		</button>
+
+
+		<button
+		  ion-button
+		  icon-start
+		  round
+		  block
+		  small
+		  (click)="_ds.createUrlForFilters()"
+		  [disabled]="!_ds.filterKeys.length && !_ds.query"
+		>
+		  <ion-icon name="link"></ion-icon>
+		  העתק קישור
+		</button>
+
+		<button
+		  ion-button
+		  icon-start
+		  round
+		  block
+		  small
+		  (click)="clearSearch()"
+		  [disabled]="!_ds.filterKeys.length && !_ds.query"
+		  color="danger"
+		>
+		  <ion-icon name="trash"></ion-icon>
+		  נקה חיפוש
+		</button>
+	</ion-col>
+
+  </ion-row>
+
+</ion-grid>

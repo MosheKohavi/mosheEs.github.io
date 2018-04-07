@@ -1,0 +1,35 @@
+<!-- Generated template for the CriteriaComponent component -->
+<div style="border: solid black 1px; display: inline-block; width: 100%">
+
+  <button ion-item
+          (click)="_ds.filterType = null; _ds.onSearch()"
+          [color]="!_ds.filterType ? 'primary' : 0"
+          icon-start
+  >
+    <ion-icon name="logo-buffer"></ion-icon>
+    כל הסוגים
+  </button>
+
+  <button ion-item
+          *ngFor="let i of types"
+          icon-start
+          (click)="clicked(i)"
+          [color]="_ds.filterType == i ? 'primary' : 0"
+  >
+    <ion-icon [name]="i.icon" [ngStyle]="{'color': i.color}"></ion-icon>
+    {{i.caption}}
+  </button>
+</div>
+
+<h1 style="display: inline-block"></h1>
+
+<!--><div style="border: solid black 1px; display: inline-block; width: 100%">
+  <button ion-item
+          (click)="_ds.recommendedOnly = !_ds.recommendedOnly; _ds.onSearch()"
+          [color]="_ds.recommendedOnly ? 'primary' : 0"
+          icon-start
+  >
+    <ion-icon name="star" style="color: #c3b900;"></ion-icon>
+    מומלצים
+  </button>
+</div><-->

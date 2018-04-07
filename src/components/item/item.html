@@ -1,0 +1,89 @@
+
+<ion-card *ngIf="!info.hidden || _ds.EDITOR_MODE">
+
+  <ion-item id="title" data-toggle="tooltip" data-placement="left" [title]="info.title">
+    <ion-icon [name]="info.type.icon" [ngStyle]="{'color': info.type.color}" item-start large *ngIf="info.type.color"></ion-icon>
+    <ion-avatar item-start *ngIf="!info.type.color"><img [src]="info.type.icon"></ion-avatar>
+    <ion-icon name="star" style="color: #c3b900" *ngIf="info.recommended" large></ion-icon>
+    <h1 style="display: inline-block" [ngStyle]="{'float' : info.language == 2 ? 'left' : 'right'}" [dir]="info.language == 2 ? 'ltr' : 'rtl'">{{info.title}}</h1>
+  </ion-item>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-item id="author" *ngIf="info.author || info.group">
+          <ion-thumbnail item-start>
+            <img [src]=authorImg>
+          </ion-thumbnail>
+          <a (click)="_ds.showPerson(info.author)" style="cursor: pointer">{{info.author.name}}</a><br>
+          <a (click)="_ds.showPerson(info.group)" style="cursor: pointer">{{info.group.name}}</a>
+          <button
+            style="float:left;"
+            ion-button
+			round
+			outline
+			large
+            [color]="info.link ? 'primary' : 'danger'"
+            [disabled] = "!info.link"
+            data-toggle="tooltip" data-placement="left" [title]="info.link"
+            (click)="openLink()"
+          >
+            {{info.link ? 'פתח קישור' : 'קישור לא קיים'}}
+          </button>
+        </ion-item>
+      </ion-col>
+      <ion-col col-1 *ngIf="_ds.EDITOR_MODE">
+        <div id="editorButtons">
+          <button ion-button
+                  clear
+                  round
+                  icon-only
+                  (click)="editItem(info)"
+          >
+            <ion-icon name="create"></ion-icon>
+          </button>
+          <br>
+          <button ion-button
+                  clear
+                  icon-only
+                  round
+                  [color]="_ds.viewTrash ? 'secondary' : 'danger'"
+                  (click)="_ds.viewTrash ? firebase.moveFromTrash(info) : firebase.moveToTrash(info)"
+          >
+            <ion-icon [name]="_ds.viewTrash ? 'refresh': 'trash'"></ion-icon>
+          </button>
+          <ion-toggle [(ngModel)]="info.hidden" (ionChange)="firebase.updateItem(info)" color="dark"></ion-toggle>
+          <p>{{info.hidden ? 'מוסתר' : 'מוצג'}}</p>
+        </div>
+      </ion-col>
+      <!--<ion-col>-->
+        <!--&lt;!&ndash;<ion-thumbnail *ngIf="info.image">&ndash;&gt;-->
+          <!--&lt;!&ndash;<img [src]="info.image" style="overflow: hidden; height: 100px">&ndash;&gt;-->
+        <!--&lt;!&ndash;</ion-thumbnail>&ndash;&gt;-->
+      <!--</ion-col>-->
+    </ion-row>
+  </ion-grid>
+
+
+  <ion-card-content *ngIf="info.fullView">
+
+    <p>{{info.abstract}}</p>
+
+    <br>
+
+    מילות חיפוש:
+    <key *ngFor="let word of info.keywords; let l = last" [text]="word" [last]="l"></key>
+
+    <br>
+
+    תאריך יצירה:
+    <p style="font-style: italic; color: #989898" *ngIf="info.dateOfCreation">{{parseDate(info.dateOfCreation)}}</p>
+
+  </ion-card-content>
+
+  <div style="float: left; cursor: pointer; margin: 5px" (click)=onClick()>
+    <ion-icon [name]="info.fullView ? 'ios-arrow-dropup' : 'ios-arrow-dropdown'"></ion-icon>
+    <a>{{info.fullView ? 'הסתר פרטים' : 'הצג פרטים'}} </a>
+  </div>
+
+</ion-card>
