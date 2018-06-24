@@ -14,12 +14,7 @@ import 'rxjs/add/operator/toPromise';
 const youTubeAPIKey = 'AIzaSyAdeseDX0E49ojQaVzUSLbha2dsJqr7gL8';
 
 export const firebaseConfig = {
-  apiKey: "AIzaSyB4X14S1SXGH-E3_Z29hIvAlNRtb9t0rQQ",
-  authDomain: "freedomlibrary-9cab5.firebaseapp.com",
-  databaseURL: "https://freedomlibrary-9cab5.firebaseio.com",
-  projectId: "freedomlibrary-9cab5",
-  storageBucket: "",
-  messagingSenderId: "723954721264"
+ <HIDDEN>
 };
 
 @Injectable()
